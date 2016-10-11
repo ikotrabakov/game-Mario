@@ -5,10 +5,12 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.smnc.mario.Mario;
+import com.smnc.mario.scenes.Hud;
 import com.sun.prism.image.ViewPort;
 
 /**
@@ -18,15 +20,15 @@ import com.sun.prism.image.ViewPort;
 public class PlayScreen implements Screen {
 
     private Mario game;
-    private Texture texture;
     private OrthographicCamera gameCam;
     private Viewport gamePort;
+    private Hud hud;
 
     public PlayScreen(Mario game) {
         this.game = game;
-        texture = new Texture("badlogic.jpg");
         gameCam = new OrthographicCamera();
-        gamePort = new ScreenViewport(gameCam); // Good for the moment
+        gamePort = new FitViewport(Mario.V_WIDTH, Mario.V_HEIGHT, gameCam);
+        hud = new Hud(game.batch);
     }
 
     @Override
@@ -38,10 +40,9 @@ public class PlayScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(1, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        game.batch.setProjectionMatrix(gameCam.combined);
-        game.batch.begin();
-        game.batch.draw(texture, 0, 0);
-        game.batch.end();
+
+        game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+        hud.stage.draw();
     }
 
     @Override
