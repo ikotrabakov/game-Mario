@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.smnc.mario.Mario;
@@ -16,7 +17,7 @@ import com.sun.org.apache.xpath.internal.operations.String;
  * Created by smn on 10/11/16.
  */
 
-public class Hud {
+public class Hud implements Disposable {
 
     public Stage stage;
     private Viewport viewport;
@@ -62,4 +63,8 @@ public class Hud {
         stage.addActor(table);
     }
 
+    @Override
+    public void dispose() {
+        stage.dispose();
+    }
 }
