@@ -43,7 +43,7 @@ public class PlayScreen implements Screen {
     private Box2DDebugRenderer b2dr;
 
     public PlayScreen(Mario game) {
-        atlas = new TextureAtlas("Mario_and_Enemies.pack");
+        atlas = new TextureAtlas("little_mario.pack");
         this.game = game;
         // create cam used to follow mario through cam world
         gameCam = new OrthographicCamera();
