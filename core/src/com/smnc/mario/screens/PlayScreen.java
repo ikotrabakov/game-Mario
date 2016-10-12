@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -35,11 +36,14 @@ public class PlayScreen implements Screen {
 
     private Marioo player;
 
+    private TextureAtlas atlas;
+
     //Box2D
     private World world;
     private Box2DDebugRenderer b2dr;
 
     public PlayScreen(Mario game) {
+        atlas = new TextureAtlas("Mario_and_Enemies.pack");
         this.game = game;
         // create cam used to follow mario through cam world
         gameCam = new OrthographicCamera();
@@ -62,7 +66,11 @@ public class PlayScreen implements Screen {
         new B2WorldCreator(world, map);
 
         // create mario in our game world
-        player = new Marioo(world);
+        player = new Marioo(world, this);
+    }
+
+    public TextureAtlas getAtlas(){
+        return atlas;
     }
 
     @Override
@@ -84,8 +92,12 @@ public class PlayScreen implements Screen {
         // handle user input.
         handleInput(dt);
 
+        // takes 1 step in the physics simulation (60 times per second)
         world.step(1/60f, 6, 2);
 
+        player.update(dt);
+
+        // attach out gamecam to to our player.x coordinates.
         gameCam.position.x = player.b2body.getPosition().x;
 
         // update gamecam with correct coordinates after changes.
@@ -108,6 +120,11 @@ public class PlayScreen implements Screen {
 
         // render our Box2DDebugLines
         b2dr.render(world, gameCam.combined);
+
+        game.batch.setProjectionMatrix(gameCam.combined);
+        game.batch.begin();
+        player.draw(game.batch);
+        game.batch.end();
 
         // set out batch to now draw what the HUD camera sees.
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
